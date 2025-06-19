@@ -20,3 +20,29 @@
 		おく  :to put 
 		き    :Tree
 		くうき:Air
+		--
+	_Katakana:
+		アイスクリーム:Ice Cream 
+		アメリカ:America 
+		イギリス:England 
+		オーストラリア:Australia 
+		カメラ:Camera 
+		コーヒー:Coffee 
+		サッカー:Soccer 
+		シューズ:Shoes 
+		スカート:Skirt 
+		テレビ:Television 
+		トマト:Tomato 
+		ノート:Notebook
+		--
+N4:
+	_Hiragana:
+		あさごはん:Breakfast 
+		あし:Leg/Foot 
+		あたま:Head 
+		あつい:Hot/Thick 
+		あめ:Rain 
+		いく  :To Go 
+		いす  :Chair 
+		いちご:Strawberry 
+		いぬ  :Dog

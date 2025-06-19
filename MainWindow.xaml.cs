@@ -91,7 +91,8 @@ namespace Japanese_Practise_App
                 JapaneseWordsWithItsEnglishMeans.Clear();
                 Questions.Clear();
                 QuestionCount = 0;
-                InitializeDictiionary();
+                NewImprovedInitializeDictionary();
+                //InitializeDictiionary();
                 GenerateQuesitonWithMCQs();
                 DisplayTextBlock.Text = Questions[0];
                 IntializeBottonackGroundColor();
@@ -112,46 +113,75 @@ namespace Japanese_Practise_App
             
             AllInitialized = true;
         }
-        
-        void InitializeDictiionary()
-        {
-            QuestionCount = PreQuestionCount; 
-            if (JapaneseWordsWithItsEnglishMeans != null)
-            {
-                foreach (string str in File.ReadLines(FilePath))
-                {
-                    string trimed = str.Trim();
-
-                    if (!string.IsNullOrWhiteSpace(trimed) && trimed.Contains(':'))
-                    {
-                        if (!JapaneseWordsWithItsEnglishMeans.ContainsKey(trimed.Substring(0, trimed.IndexOf(':'))))
-                        {
-                            JapaneseWordsWithItsEnglishMeans.Add(trimed.Substring(0, trimed.IndexOf(':')), trimed.Substring(trimed.IndexOf(':') + 1));
-                        }
-                    }
-                }
-            }
-            
-            TotalQuestion = (TextBlock)FindName("TotalQuestions");
-            TotalQuestion.Text = $"{Pointer+1}/{QuestionCount}";
-        }
-
         Dictionary<string, string> WordsList = new Dictionary<string, string>();
-        
+        string GolLvl = "";
+        string GolScript = "";
+
         void NewImprovedInitializeDictionary()
         {
-            string curLvl="";
-            string CurScript = "";
+            //JapaneseWordsWithItsEnglishMeans.Clear();
+            if (N5.IsChecked == true)
+            {
+                GolLvl = "N5";
+                if (Hiragana.IsChecked == true)
+                {
+                    GolScript = "Hiragana";
+                }else if(Katakana.IsChecked == true)
+                {
+                    GolScript = "Katakana";
+                }
+            }
+            else if(N4.IsChecked == true)
+            {
+                GolLvl = "N4";
+                if (Hiragana.IsChecked == true)
+                {
+                    GolScript = "Hiragana";
+                }
+            }
 
+            string curLvl = "";
+            string CurScript = "";
+            QuestionCount = PreQuestionCount;
+            bool lvlselected = false;
+            bool scriptselected = false;
             foreach (string str in File.ReadLines(FilePath))
             {
                 string line = str.Trim();
                 if(string.IsNullOrWhiteSpace(line) || !line.Contains(':')) continue;
-                
-                
 
+                if (line.StartsWith("N") && line.EndsWith(":"))
+                {
+                    curLvl = line.TrimEnd(':');
+                    lvlselected = (curLvl == GolLvl);
+                    scriptselected = false; 
+                }
+                else if (line.TrimStart().StartsWith("_") && line.EndsWith(":") && lvlselected)
+                {
+                    CurScript = line.TrimStart('_').TrimEnd(':').Trim();
+                    scriptselected = (CurScript == GolScript);
+                }
+                else if (line.Contains(':') && lvlselected && scriptselected)
+                {
+                    string[] parts = line.Split(':');
+                    if (parts.Length == 2)
+                    {
 
+                        string key = parts[0].Trim();
+                        string value = parts[1].Trim();
+                        if (!JapaneseWordsWithItsEnglishMeans.ContainsKey(key))
+                        {
+                            JapaneseWordsWithItsEnglishMeans.Add(key, value);
+                        }
+                    }
+                }
+                else if (line.Contains("-") && !lvlselected)
+                {
+                    break;
+                }
             }
+            TotalQuestion = (TextBlock)FindName("TotalQuestions");
+            TotalQuestion.Text = $"{Pointer + 1}/{QuestionCount}";
 
         }
         void GenerateQuesitonWithMCQs()
@@ -161,7 +191,8 @@ namespace Japanese_Practise_App
             
             for (int i =0; i< QuestionCount; i++)
             {
-                    JapaneseWordsWithItsEnglishMeans.TryGetValue(Questions[i], out Correctkey);
+                //MessageBox.Show(JapaneseWordsWithItsEnglishMeans.Count.ToString());
+                JapaneseWordsWithItsEnglishMeans.TryGetValue(Questions[i], out Correctkey);
                 
                 GenerateMCQ(Correctkey);
                 MarkedStatus.Add(0); 
@@ -372,8 +403,8 @@ namespace Japanese_Practise_App
 
             QuestionCount = 0;
             Pointer = 0;
-            
-            InitializeDictiionary();
+            NewImprovedInitializeDictionary();
+            //InitializeDictiionary();
             GenerateQuesitonWithMCQs();
             DisplayTextBlock.Text = Questions[0];
             IntializeBottonackGroundColor();
@@ -427,8 +458,8 @@ namespace Japanese_Practise_App
             {
                 box.IsChecked = true;
             }
-            
             QuestionCount = int.Parse(box.Content.ToString()); 
+           
             if (QuestionCount < Questions.Count)
             {
                 PreQuestionCount = QuestionCount;
@@ -484,6 +515,13 @@ namespace Japanese_Practise_App
             {
                 if (int.TryParse(IN_Box.Text, out int result) && result > 0)
                 {
+                    if(result > Questions.Count)
+                    {
+                        MessageBox.Show("The List Cotains more Number of Questions then Selected \n " +
+                            "Select Less Question or increase Number of Question in the List. \n" +
+                            "(Setting to max Availabe questions)");
+                        result = Questions.Count;
+                    }
                     PreQuestionCount = result;
                     CustomWin.Close();
                 }
