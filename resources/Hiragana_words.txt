@@ -17,3 +17,4 @@
 きかい:Machine 
 おく:to put 
 き:Tree
+くうき:Air

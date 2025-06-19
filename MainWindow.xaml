@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:Japanese_Practise_App"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" ResizeMode="NoResize">
+    
+    
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -13,6 +16,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <TextBlock x:Name="Text_Display" Grid.Row="1" Text="Hi" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="100" Margin="50"/>
+           
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -30,7 +35,7 @@
         
         
         <ToolBar Grid.Row="0" >
-            <Button x:Name="Reset" Content="Reset" Height="20" Width="75" Margin="0,0,0,0"/>
+            <Button x:Name="Reset" Content="Reset" Height="20" Width="75" Margin="0,0,0,0" Click="Reset_Click" IsEnabled="True"/>
             <Separator/>
 
             <Button x:Name="FileDropDown" Content="File" Width="50" Click="FileDropDown_Click"/>
@@ -43,16 +48,41 @@
             <Button x:Name="SelectDropDown" Content="Select" Width="50" Click="SelectDropDown_Click"/>
             <Popup x:Name="SelectPopup" PlacementTarget="{Binding ElementName=SelectDropDown}" IsOpen="False" PopupAnimation="Slide" StaysOpen="False" Placement="Bottom">
                 <Menu x:Name="SelectMenu">
-                    <CheckBox x:Name="CheckBox1" Content="Words(Hiragana)" Click="OnlyOneIsCheckedInMenu" Background="Transparent" BorderThickness="0"  BorderBrush="Transparent" IsChecked="True" />
-                    <CheckBox x:Name="CheckBox2" Content="Words(Katakana)" Click="OnlyOneIsCheckedInMenu" Background="Transparent" BorderThickness="0"  BorderBrush="Transparent" IsChecked="False"/>
-                    <CheckBox x:Name="CheckBox3" Content="Words(Kanji)" Click="OnlyOneIsCheckedInMenu" Background="Transparent" BorderThickness="0"  BorderBrush="Transparent" IsChecked="False"/>
+                    <CheckBox x:Name="Hiragana" Content="Words(Hiragana)" Click="OnlyOneIsCheckedInMenu" Background="Transparent" BorderThickness="0"  BorderBrush="Transparent" IsChecked="True" />
+                    <CheckBox x:Name="Katakana" Content="Words(Katakana)" Click="OnlyOneIsCheckedInMenu" Background="Transparent" BorderThickness="0"  BorderBrush="Transparent" IsChecked="False"/>
+                    <CheckBox x:Name="Kanji" Content="Words(Kanji)" Click="OnlyOneIsCheckedInMenu" Background="Transparent" BorderThickness="0"  BorderBrush="Transparent" IsChecked="False"/>
+                    
                 </Menu>
             </Popup>
 
+            <Button x:Name="LevelSelect" Content="Level" Width="50" Click="LevelSelect_Click"/>
+            <Popup x:Name="LevelSelectPopUp" PlacementTarget="{Binding ElementName=LevelSelect}" IsOpen="False" StaysOpen="False" Placement="Bottom" >  
+                <StackPanel x:Name="LevelStack" Background="White" >
+                    <CheckBox x:Name="N5" Content="N5" Background="Transparent" IsChecked="True" BorderThickness="0"  Click="Level_Select"/>
+                    <CheckBox x:Name="N4" Content="N4" Background="Transparent" IsChecked="False" BorderThickness="0" Click="Level_Select"/>
+                    <CheckBox x:Name="N3" Content="N3" Background="Transparent" IsChecked="False" BorderThickness="0" Click="Level_Select"/>
+                    <CheckBox x:Name="N2" Content="N2" Background="Transparent" IsChecked="False" BorderThickness="0" Click="Level_Select"/>
+                    <CheckBox x:Name="N1" Content="N1" Background="Transparent" IsChecked="False" BorderThickness="0" Click="Level_Select"/>
 
+                    <Line HorizontalAlignment="Stretch" VerticalAlignment="Center" Stroke="Black" StrokeThickness="1" 
+                        X1="0" Y1="10" X2="100" Y2="10"/>
+                    <Label Content="Question Count" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    <CheckBox x:Name="q_25" Content="25" BorderThickness="0" Background="Transparent"  Click="SelectQuestionCount"/>
+                    <CheckBox x:Name="q_15" Content="15" BorderThickness="0" Background="Transparent" Click="SelectQuestionCount"/>
+                    <CheckBox x:Name="q_10" Content="10" BorderThickness="0" Background="Transparent" Click="SelectQuestionCount"/>
+                    <CheckBox x:Name="q_5" Content="5" BorderThickness="0" Background="Transparent" IsChecked="True" Click="SelectQuestionCount"/>
+                    <Button x:Name="Custom" Content="Custom.." BorderThickness="0" Background="Transparent" Click="CustomQuestionCount"/>
+                </StackPanel>
+                
+                
+            </Popup>
+
+            
+            
+            
         </ToolBar>
         
-        <TextBlock x:Name="Text_Display" Grid.Row="1" Text="Hi" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="100" TextWrapping="Wrap"/>
+        
         <Grid Grid.Row="2" x:Name="Mulitple_Buttons">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -69,8 +99,8 @@
             <Button Tag = "3" x:Name="Btn4" Grid.Row="1" Grid.Column="1" Height="50" Width="200" Content="" FontSize="30" Margin="10" Click="MCQ" BorderThickness ="0"/>
         </Grid>
 
-        <Button x:Name="Left_Move" Grid.Row="1" Content="&lt;" Height="50" Width="50" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Click="MoveThroughList"/>
-        <Button x:Name="Right_Move" Grid.Row="1" Content=">" Height="50" Width="50" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Click="MoveThroughList"/>
+        <Button x:Name="Left_Move" Grid.Row="1" Content="&lt;" Height="50" Width="50" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Click="MoveThroughList" IsEnabled="False"/>
+        <Button x:Name="Right_Move" Grid.Row="1" Content=">" Height="50" Width="50" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Click="MoveThroughList" IsEnabled="False"/>
 
 
     </Grid>

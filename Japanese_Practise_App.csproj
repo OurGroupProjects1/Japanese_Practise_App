@@ -9,11 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="resources\Words_List.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="resources\Words_List.txt">
+    <Content Include="resources\Hiragana_words.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

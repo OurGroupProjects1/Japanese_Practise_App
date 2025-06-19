@@ -1,20 +1,22 @@
 ﻿using Microsoft.Win32;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
+using System.DirectoryServices;
+
+//using System.Drawing;
 using System.IO;
 
 using System.Windows;
 using System.Windows.Controls;
 
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using static Japanese_Practise_App.MainWindow;
 
 
 namespace Japanese_Practise_App
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+   
     public partial class MainWindow : Window
     {
         Button[] btns = new Button[4];
@@ -23,19 +25,53 @@ namespace Japanese_Practise_App
         List<string> Questions = new List<string>();
         int QuestionCount;
         List<string> Allkey;
-        TextBlock DisplayTextBlock;
-        TextBlock TotalQuestion;
-        int dup = 0;
+        TextBlock DisplayTextBlock, TotalQuestion;        
+        CheckBox PrevChecked, PrevLevel,PrevQuestionCount;
         public MainWindow()
         {
             
             InitializeComponent();
-            DisplayTextBlock = (TextBlock)FindName("Text_Display");
-            
+            DisplayTextBlock =Text_Display;
+            PrevChecked = Hiragana;
+            PrevLevel = N5;
+            PrevQuestionCount = q_5;
+            PreQuestionCount = 5; 
         }
+        
 
         string FilePath;
 
+        Color lerp(Color from, Color to, double t)
+        {
+            byte a = (byte)(from.A + (to.A - from.A) * t);
+            byte r = (byte)(from.R + (to.R - from.R) * t);
+
+            byte g = (byte)(from.G + (to.G - from.G) * t);
+            byte b = (byte)(from.B + (to.B - from.B) * t);
+
+            return Color.FromArgb(a, r, g, b);
+        }
+
+        
+
+
+        GradientStop A = new GradientStop(Color.FromArgb(255, 230, 242, 255), 0.8f);
+        GradientStop B = new GradientStop(Color.FromArgb(255, 200, 200, 200), 0.1f);
+        LinearGradientBrush GradientBrush;
+        Style gradientStyle = new Style(typeof(Button));
+        public bool AllInitialized = false;
+        void GradientButtons(GradientStop A, GradientStop B)
+        {
+            
+           //Gradient from A->B from (0,0) -> (1,1)
+            GradientBrush = new LinearGradientBrush();
+            GradientBrush.StartPoint = new Point(0, 0);
+            GradientBrush.EndPoint = new Point(1, 1);
+            
+            GradientBrush.GradientStops.Add(A);
+            GradientBrush.GradientStops.Add(B);
+
+        }
         void FileBroswer(object sender,RoutedEventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog();
@@ -49,8 +85,9 @@ namespace Japanese_Practise_App
             else
             {
                 MessageBox.Show("No file selected. Using default file path.");
-                FilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "Words_List.txt");
+                FilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "Hiragana_words.txt");
             }
+                
                 JapaneseWordsWithItsEnglishMeans.Clear();
                 Questions.Clear();
                 QuestionCount = 0;
@@ -58,31 +95,64 @@ namespace Japanese_Practise_App
                 GenerateQuesitonWithMCQs();
                 DisplayTextBlock.Text = Questions[0];
                 IntializeBottonackGroundColor();
-                InitializeButtons();
             
+            GradientButtons(A,B);
+            gradientStyle.Setters.Add(new Setter(Button.BackgroundProperty, GradientBrush));
+            Application.Current.Resources[typeof(Button)] = gradientStyle;
+            InitializeButtons();
+
+            Button[] TmpButton = new Button[3];
+            TmpButton[0] = Left_Move;
+            TmpButton[1] = Right_Move;
+            TmpButton[2] = Reset;
+            for(int i = 0; i<3; i++)
+            {
+                TmpButton[i].IsEnabled = true;
+            }
+            
+            AllInitialized = true;
         }
         
         void InitializeDictiionary()
         {
-            
-            foreach (string str in File.ReadLines(FilePath))
+            QuestionCount = PreQuestionCount; 
+            if (JapaneseWordsWithItsEnglishMeans != null)
             {
-                string trimed = str.Trim();
-                
-                if (trimed.Contains(':'))
+                foreach (string str in File.ReadLines(FilePath))
                 {
-                    if (!JapaneseWordsWithItsEnglishMeans.ContainsKey(trimed.Substring(0, trimed.IndexOf(':'))))
+                    string trimed = str.Trim();
+
+                    if (!string.IsNullOrWhiteSpace(trimed) && trimed.Contains(':'))
                     {
-                        JapaneseWordsWithItsEnglishMeans.Add(trimed.Substring(0, trimed.IndexOf(':')), trimed.Substring(trimed.IndexOf(':') + 1));
-                        QuestionCount++;
+                        if (!JapaneseWordsWithItsEnglishMeans.ContainsKey(trimed.Substring(0, trimed.IndexOf(':'))))
+                        {
+                            JapaneseWordsWithItsEnglishMeans.Add(trimed.Substring(0, trimed.IndexOf(':')), trimed.Substring(trimed.IndexOf(':') + 1));
+                        }
                     }
-                    
                 }
-                
             }
             
             TotalQuestion = (TextBlock)FindName("TotalQuestions");
             TotalQuestion.Text = $"{Pointer+1}/{QuestionCount}";
+        }
+
+        Dictionary<string, string> WordsList = new Dictionary<string, string>();
+        
+        void NewImprovedInitializeDictionary()
+        {
+            string curLvl="";
+            string CurScript = "";
+
+            foreach (string str in File.ReadLines(FilePath))
+            {
+                string line = str.Trim();
+                if(string.IsNullOrWhiteSpace(line) || !line.Contains(':')) continue;
+                
+                
+
+
+            }
+
         }
         void GenerateQuesitonWithMCQs()
         {
@@ -91,9 +161,10 @@ namespace Japanese_Practise_App
             
             for (int i =0; i< QuestionCount; i++)
             {
-                JapaneseWordsWithItsEnglishMeans.TryGetValue(Questions[i], out Correctkey);
+                    JapaneseWordsWithItsEnglishMeans.TryGetValue(Questions[i], out Correctkey);
+                
                 GenerateMCQ(Correctkey);
-                MarkedStatus.Add(0); // Initialize with 0 (no answer marked)
+                MarkedStatus.Add(0); 
             }
         }
         void ShuffleWordsAndAssignToQuestions()
@@ -142,10 +213,11 @@ namespace Japanese_Practise_App
          
         void InitializeButtons()
         {
-            btns[0] = (Button)FindName("Btn1");
-            btns[1] = (Button)FindName("Btn2");
-            btns[2] = (Button)FindName("Btn3");
-            btns[3] = (Button)FindName("Btn4");
+
+            btns[0] = Btn1;
+            btns[1] = Btn2;
+            btns[2] = Btn3;
+            btns[3] = Btn4;
 
             for (int i = 0; i < 4; i++)
             {
@@ -156,7 +228,10 @@ namespace Japanese_Practise_App
                 btns[i].Content = AllMCQsets[Pointer].MCQs[i];
                 if(ColoredChoice[Pointer][i] == 1)
                 {
-                    btns[i].Background = Brushes.Green;
+                    A = new GradientStop(Color.FromArgb(255, 200, 255, 200), 0.8f);
+                    B = new GradientStop(Color.FromArgb(255, 200, 200, 200), 0.1f);
+                    GradientButtons(A, B);
+                    btns[i].Background = GradientBrush;
                     if (MarkedStatus[Pointer] == 0)
                     {
                         MarkedStatus.Add(1);
@@ -164,7 +239,10 @@ namespace Japanese_Practise_App
                 }
                 else if (ColoredChoice[Pointer][i] == -1)
                 {
-                    btns[i].Background = Brushes.Red;
+                    A = new GradientStop(Color.FromArgb(255, 255, 200, 200), 0.8f);
+                    B = new GradientStop(Color.FromArgb(255, 200, 200, 200), 0.1f);
+                    GradientButtons(A, B);
+                    btns[i].Background = GradientBrush;
                     if (MarkedStatus[Pointer] == 0)
                     {
                         MarkedStatus.Add(-1);
@@ -172,7 +250,10 @@ namespace Japanese_Practise_App
                 }
                 else
                 {
-                    btns[i].Background = Brushes.LightGray; 
+                    A = new GradientStop(Color.FromArgb(255, 230, 242, 255), 0.8f);
+                    B = new GradientStop(Color.FromArgb(255, 200, 200, 200), 0.1f);
+                    GradientButtons(A, B);
+                    btns[i].Background = GradientBrush; 
                 }
             }
             
@@ -189,6 +270,7 @@ namespace Japanese_Practise_App
                 ColoredChoice.Add(MCQColorArray); 
             }
         }
+        Color Start, End;
 
         void MCQ(object sender, RoutedEventArgs e)
         {
@@ -200,13 +282,21 @@ namespace Japanese_Practise_App
                 JapaneseWordsWithItsEnglishMeans.TryGetValue(Questions[Pointer],out CheckCorrectAnswer);
                 if(btn.Content.ToString() == CheckCorrectAnswer)
                 {
-                    btn.Background = Brushes.Green;
-                    ColoredChoice[Pointer][Convert.ToInt32(tag)] = 1; // Correct answer
+                    
+                    A =new GradientStop(Color.FromArgb(255, 200, 255, 200),0.8f);
+                    B= new GradientStop(Color.FromArgb(255, 200, 242, 200),0.1f);
+                    
+                    GradientButtons(A, B);
+                    btn.Background = GradientBrush;
+                    ColoredChoice[Pointer][Convert.ToInt32(tag)] = 1; 
                 }
                 else
                 {
-                    btn.Background = Brushes.Red;
-                    ColoredChoice[Pointer][Convert.ToInt32(tag)] = -1; // Incorrect answer
+                    A = new GradientStop(Color.FromArgb(255, 255, 200, 200), 0.8f);
+                    B = new GradientStop(Color.FromArgb(255, 200, 200, 200), 0.1f);
+                    GradientButtons(A, B);
+                    btn.Background = GradientBrush;
+                    ColoredChoice[Pointer][Convert.ToInt32(tag)] = -1; 
                 }
             }
             
@@ -216,49 +306,53 @@ namespace Japanese_Practise_App
         void MoveThroughList(object sender, RoutedEventArgs e)
         {
 
-            Button btn = (Button)sender;
-            if (btn.Name == "Left_Move")
+            if (AllInitialized)
             {
-                Pointer--;
-                if (Pointer <= 0) { Pointer = 0; }
-                InitializeButtons();
+                Button btn = (Button)sender;
+                if (btn.Name == "Left_Move")
+                {
+                    Pointer--;
+                    if (Pointer <= 0) { Pointer = 0; }
+                    InitializeButtons();
 
-                TotalQuestion.Text = $"{Pointer+1}/{QuestionCount}";
-                DisplayTextBlock.Text = Questions[Pointer];
+                    TotalQuestion.Text = $"{Pointer + 1}/{QuestionCount}";
+                    DisplayTextBlock.Text = Questions[Pointer];
+
+                }
+                else if (btn.Name == "Right_Move")
+                {
+                    Pointer++;
+                    if (Pointer >= QuestionCount) { Pointer = QuestionCount - 1; }
+                    InitializeButtons();
+
+                    TotalQuestion.Text = $"{Pointer + 1}/{QuestionCount}";
+                    DisplayTextBlock.Text = Questions[Pointer];
+                }
                 
-            }else if(btn.Name == "Right_Move")
-            {
-                Pointer++;
-                if (Pointer >= Questions.Count) { Pointer = Questions.Count - 1; }
-                InitializeButtons();
-                
-                TotalQuestion.Text = $"{Pointer + 1}/{QuestionCount}";
-                DisplayTextBlock.Text = Questions[Pointer];
             }
+            
         }
 
         private void LoadWordsFromFile(object sender, RoutedEventArgs e)
         {
 
         }
-
+        
         void OnlyOneIsCheckedInMenu(object sender, RoutedEventArgs e)
         {
-            CheckBox PrevChecked =(CheckBox)FindName("CheckBox1");
-            Menu menu = (Menu)FindName("SelectMenu");
-
-
-            foreach (var item in menu.Items)
+            
+            Menu menu = SelectMenu;
+            CheckBox box = (CheckBox)sender;
+            if(box.IsChecked == true && box != PrevChecked)
             {
-                if(item is CheckBox cb)
-                {
-                    if(cb.IsChecked ==true)
-                    {
-
-                    }        
-                }
+                PrevChecked.IsChecked = false;
+                box.IsChecked = true;
+                PrevChecked = box;
             }
-          
+            else if(box ==PrevChecked)
+            {
+                box.IsChecked = true;
+            }
 
         }
 
@@ -267,10 +361,145 @@ namespace Japanese_Practise_App
             FilePopup.IsOpen = true;
         }
 
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            AllMCQsets.Clear();
+            MarkedStatus.Clear();
+            ColoredChoice.Clear();
+            Questions.Clear();
+            JapaneseWordsWithItsEnglishMeans.Clear();
+
+
+            QuestionCount = 0;
+            Pointer = 0;
+            
+            InitializeDictiionary();
+            GenerateQuesitonWithMCQs();
+            DisplayTextBlock.Text = Questions[0];
+            IntializeBottonackGroundColor();
+            InitializeButtons();
+            TotalQuestion = (TextBlock)FindName("TotalQuestions");
+            
+            TotalQuestion.Text = $"{Pointer+1}/{QuestionCount}";
+
+        }
+
         private void SelectDropDown_Click(object sender, RoutedEventArgs e)
         {
             SelectPopup.IsOpen = true;
             
+        }
+
+        
+        private void Level_Select(object sender, RoutedEventArgs e)
+        {
+            CheckBox box = (CheckBox)sender;
+            StackPanel stk = LevelStack;
+            if(box.IsChecked == true && box != PrevLevel)
+            {
+                box.IsChecked = true;
+                PrevLevel.IsChecked = false;
+                PrevLevel = box;
+            }
+            else
+            {
+                box.IsChecked = true;
+            }
+        }
+
+        private void LevelSelect_Click(object sender,RoutedEventArgs e)
+        {
+            LevelSelectPopUp.IsOpen = true;
+        }
+        int PreQuestionCount = 0;
+        private void SelectQuestionCount(object sender,RoutedEventArgs e)
+        {
+            
+            CheckBox box = (CheckBox)sender;
+            StackPanel stk = LevelStack;
+            if (box.IsChecked == true && box != PrevQuestionCount)
+            {
+                PrevQuestionCount.IsChecked = false;
+                box.IsChecked = true;
+                PrevQuestionCount = box;
+            }
+            else if (box == PrevQuestionCount)
+            {
+                box.IsChecked = true;
+            }
+            
+            QuestionCount = int.Parse(box.Content.ToString()); 
+            if (QuestionCount < Questions.Count)
+            {
+                PreQuestionCount = QuestionCount;
+            }
+            else
+            {
+                MessageBox.Show("The List Cotains Less Number of Questions then Selected \n " +
+                    "Select Less Question or increase Number of Question in the List. \n" +
+                    "(Setting to max Availabe questions)");
+
+                PreQuestionCount = Questions.Count; 
+                Reset_Click(sender, e);
+            }
+        }
+
+        private void CustomQuestionCount(object sender, RoutedEventArgs e)
+        {
+            
+            Window CustomWin = new Window();
+            CustomWin.Width = 300;
+            CustomWin.Height = 200;
+            CustomWin.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            CustomWin.ResizeMode = ResizeMode.NoResize;
+            CustomWin.WindowStyle = WindowStyle.ToolWindow;
+
+            
+            Grid grid = new Grid();
+            
+            Label label = new Label();
+            label.Content = "Enter Number of Questions";
+            label.HorizontalAlignment = HorizontalAlignment.Center;
+            label.VerticalAlignment = VerticalAlignment.Top;
+            label.Margin = new Thickness(0, 20, 0, 0);
+
+            TextBox IN_Box = new TextBox();
+            IN_Box.HorizontalAlignment = HorizontalAlignment.Center;
+            IN_Box.VerticalAlignment = VerticalAlignment.Center;
+            IN_Box.Width = 150;
+            IN_Box.Height = 25;
+            IN_Box.BorderThickness = new Thickness(1);
+            IN_Box.Margin = new Thickness(50);
+            IN_Box.FontSize = 18;
+
+            Button b_OK = new Button();
+            b_OK.Width = 50; b_OK.Height = 25;
+            b_OK.Content = "Done";
+            b_OK.HorizontalAlignment = HorizontalAlignment.Center;
+            b_OK.VerticalAlignment = VerticalAlignment.Bottom;
+            b_OK.Margin = new Thickness(0, 0, 0, 15);
+            b_OK.BorderThickness = new Thickness(0);
+
+            b_OK.Click += (sender, e) =>
+            {
+                if (int.TryParse(IN_Box.Text, out int result) && result > 0)
+                {
+                    PreQuestionCount = result;
+                    CustomWin.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Please enter a valid number greater than 0.");
+                }
+            };
+
+            grid.Children.Add(IN_Box);
+            grid.Children.Add(b_OK);
+            grid.Children.Add(label);
+
+            CustomWin.Content = grid;
+            CustomWin.ShowDialog();
+
         }
     }
 }
