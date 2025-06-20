@@ -1,25 +1,76 @@
 ﻿N5:
 	_Hiragana:
-		あい　:To Love 
-		うえ	 :Above/on the Top 
+		[Nouns]
+		うえ:Above/on the Top  
+		いえ:House  
+		え:Portrait  
+		おおい:Plenty
+		いけ:Pond  
+		かい:Shellfish  
+		こえ:Voice  
+		かお:Face  
+		き :Tree  
+		くうき:Air  
+		ご：Five/Language  
+		ごご:PM  
+		じあい:Condition  
+		がか:Artist  
+		かいぎ:Meeting  
+		ごい:Word  
+		すし:Sushi  
+		あし:Leg  
+		しお:Salt  
+		せかい:World  
+		そこ:There  
+		かさ:Umbrella  
+		おさけ:Rice Wine  
+		あさ:Morning  
+		あさごはん:Breakfast  
+		あたま:Head  
+		いす  :Chair  
+		いちご:Strawberry  
+		いぬ  :Dog  
+		じ:Letter/o'clock  
+		ぞう:Elephant  
+		かず:Number  
+		かぜ:Wind/Cold  
+		かぞく:Family  
+		きせつ:Seasons  
+		ちち:Father (self)  
+		そと:Outside  
+		くつ:Shoes  
+		した:Down/under  
+		うた:Song  
+		いと:Thread  
+		て:Hand  
+		とい:Question  
+		ちず:Map  
+		だいず:Soyabean  
+		だい:Big/Large  
+		だいがく:College  
+		--
+		[Verbs]
+		あい:To Love  
+		あう:To Meet  
+		かう:To Buy  
+		おく:To Put  
+		さす:To Point  
+		いく:To Go  
+		だす:To Send  
+		つづけ:To Continue  
+		--
+		[い_Adjectives]
 		あおい:Blue  
-		いいえ:No 
-		いえ	 :House 
-		あう	 :To Meet 
-		え	 :portrait 
-		いい	 :Good/Ok 
-		おおい:Plenty 
-		いって:To say 
-		いけ	 :Pond 
-		かい  :SheelFish 
-		こえ  :Voice
-		かう  :To Buy 
-		かお  :Face 
-		あかい:Red 
-		きかい:Machine 
-		おく  :to put 
-		き    :Tree
-		くうき:Air
+		いい:Good/Ok  
+		あかい:Red  
+		あめ:Rain   
+		しずか:Quiet  
+		おおい:Plenty  
+		あつい:Hot  
+		--
+		[な_Adjectives]
+		しずか:Calm/Quiet  
+		だい:Big/Large  
 		--
 	_Katakana:
 		アイスクリーム:Ice Cream 
@@ -35,14 +86,72 @@
 		トマト:Tomato 
 		ノート:Notebook
 		--
+	_Kanji:
+		[Nouns]
+		上	:うえ  
+		家	:いえ  
+		絵	:え  
+		池	:いけ  
+		貝	:かい  
+		声	:こえ  
+		顔	:かお  
+		木	:き  
+		空気	:くうき  
+		五	:ご  
+		午後	:ごご  
+		字合い	:じあい  
+		画家	:がか  
+		会議	:かいぎ  
+		語彙	:ごい  
+		足	:あし  
+		塩	:しお  
+		世界	:せかい  
+		酒	:おさけ  
+		朝	:あさ  
+		朝ご飯	:あさごはん  
+		頭	:あたま  
+		椅子	:いす  
+		苺	:いちご  
+		犬	:いぬ  
+		時	:じ  
+		象	:ぞう  
+		数	:かず  
+		風	:かぜ  
+		家族	:かぞく  
+		季節	:きせつ  
+		父	:ちち  
+		外	:そと  
+		靴	:くつ  
+		下	:した  
+		歌	:うた  
+		糸	:いと  
+		手	:て  
+		問い	:とい  
+		地図	:ちず  
+		大豆	:だいず  
+		大学	:だいがく  
+		--
+		[Verbs]
+		愛する	:あいする  
+		会う	:あう  
+		買う	:かう  
+		置く	:おく  
+		指す	:さす  
+		行く	:いく  
+		出す	:だす  
+		続ける	:つづける  
+		--
+		[Adjectives - い]
+		青い	:あおい  
+		良い	:いい  
+		赤い	:あかい  
+		暑い / 熱い	:あつい  
+		多い	:おおい  
+		--
+		[Adjectives - な]
+		静か	:しずか  
+		大きな	:おおきな (related to だい) 
+		--
 N4:
 	_Hiragana:
-		あさごはん:Breakfast 
-		あし:Leg/Foot 
-		あたま:Head 
-		あつい:Hot/Thick 
-		あめ:Rain 
-		いく  :To Go 
-		いす  :Chair 
-		いちご:Strawberry 
-		いぬ  :Dog
+		--

@@ -73,13 +73,20 @@
                     <CheckBox x:Name="q_5" Content="5" BorderThickness="0" Background="Transparent" IsChecked="True" Click="SelectQuestionCount"/>
                     <Button x:Name="Custom" Content="Custom.." BorderThickness="0" Background="Transparent" Click="CustomQuestionCount"/>
                 </StackPanel>
-                
+   
+            </Popup>
+            <Button x:Name="Type" Content="Type" Width="50" Click="TypeDropDown_Click"/> 
+            <Popup x:Name="TypePopup" PlacementTarget="{Binding ElementName=Type}" IsOpen="False" StaysOpen="False" Placement="Bottom">
+                <StackPanel x:Name="TypeStack" Orientation="Vertical" Background="White">
+                    <CheckBox x:Name="Nouns" Content="Nouns" Background="Transparent" IsChecked="True" BorderThickness="0"  Click="TypeSelect"/>
+                    <CheckBox x:Name="Verbs" Content="Verbs" Background="Transparent" IsChecked="False" BorderThickness="0"  Click="TypeSelect"/>
+                    <CheckBox x:Name="い_Adjectives" Content="い_Adjectives" Background="Transparent" IsChecked="False" BorderThickness="0"  Click="TypeSelect"/>
+                    <CheckBox x:Name="な_Adjectives" Content="な_Adjectives" Background="Transparent" IsChecked="False" BorderThickness="0"  Click="TypeSelect"/>
+                </StackPanel>
                 
             </Popup>
 
-            
-            
-            
+
         </ToolBar>
         
         
